@@ -9,6 +9,28 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 // const Jarvis = require('webpack-jarvis')
+// addWebpackPlugin(
+//   new Jarvis({
+//     port: 1337,
+//   })
+// )
+let plugins = [
+  addWebpackPlugin(new AntdDayjsWebpackPlugin()),
+  addWebpackPlugin(new CleanWebpackPlugin()),
+]
+
+// if (process.env.NODE_ENV === 'production') {
+//   plugins.push(
+//     addWebpackPlugin(
+//       new BundleAnalyzerPlugin({
+//         analyzerMode: 'static',
+//         reportFilename: 'report.html',
+//         openAnalyzer: false,
+//         generateStatsFile: true,
+//       })
+//     )
+//   )
+// }
 
 module.exports = override(
   fixBabelImports('import', {
@@ -20,19 +42,14 @@ module.exports = override(
     javascriptEnabled: true,
     modifyVars: { '@primary-color': '#1DA57A' },
   }),
-  addWebpackPlugin(new AntdDayjsWebpackPlugin()),
-  addWebpackPlugin(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      reportFilename: 'report.html',
-      openAnalyzer: false,
-      generateStatsFile: true,
-    })
-  ),
-  addWebpackPlugin(new CleanWebpackPlugin())
-  // addWebpackPlugin(
-  //   new Jarvis({
-  //     port: 1337,
-  //   })
-  // )
+  process.env.NODE_ENV === 'production' &&
+    addWebpackPlugin(
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: 'report.html',
+        openAnalyzer: false,
+        generateStatsFile: true,
+      })
+    ),
+  ...plugins
 )
