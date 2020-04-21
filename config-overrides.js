@@ -4,10 +4,14 @@ const {
   addLessLoader,
   addWebpackPlugin,
 } = require('customize-cra')
+
 const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin')
+
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
 // const Jarvis = require('webpack-jarvis')
 // addWebpackPlugin(
 //   new Jarvis({
@@ -19,18 +23,18 @@ let plugins = [
   addWebpackPlugin(new CleanWebpackPlugin()),
 ]
 
-// if (process.env.NODE_ENV === 'production') {
-//   plugins.push(
-//     addWebpackPlugin(
-//       new BundleAnalyzerPlugin({
-//         analyzerMode: 'static',
-//         reportFilename: 'report.html',
-//         openAnalyzer: false,
-//         generateStatsFile: true,
-//       })
-//     )
-//   )
-// }
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(
+    addWebpackPlugin(
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: 'report.html',
+        openAnalyzer: false,
+        generateStatsFile: true,
+      })
+    )
+  )
+}
 
 module.exports = override(
   fixBabelImports('import', {
@@ -40,16 +44,9 @@ module.exports = override(
   }),
   addLessLoader({
     javascriptEnabled: true,
-    modifyVars: { '@primary-color': '#1DA57A' },
+    modifyVars: {
+      'primary-color': '#1DA57A',
+    },
   }),
-  process.env.NODE_ENV === 'production' &&
-    addWebpackPlugin(
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        reportFilename: 'report.html',
-        openAnalyzer: false,
-        generateStatsFile: true,
-      })
-    ),
   ...plugins
 )
